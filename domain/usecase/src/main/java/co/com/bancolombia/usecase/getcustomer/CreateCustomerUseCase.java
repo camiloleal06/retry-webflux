@@ -18,7 +18,9 @@ public class CreateCustomerUseCase {
 
      public Mono<String> createCustomer(Customer customer) {
       return customerRepository.createCustomer(customer).
-         retryWhen(buildRetryConfigBackoffAndJitter(customer));
+         retryWhen(buildRetryConfigBackoffAndJitter(customer))
+              .onErrorResume(TechnicalException.class, e -> Mono.empty())
+              .onErrorResume(Exception.class,e -> Mono.empty());
     }
 
     private Retry buildRetryConfigBackoffAndJitter(Customer customer) {
@@ -49,11 +51,10 @@ public class CreateCustomerUseCase {
                 .onRetryExhaustedThrow(this::handleRetryExhausted);
     }
 
-
-
     private void createCustomerByRetry(Customer customer) {
         customerRepository.createCustomer(customer)
-                .subscribe();
+                .subscribe(customerResponse -> System.out.println("Customer created with ID: " + customer.getName()),
+                        error -> System.err.println("Error creating customer: " + error.getMessage()));
     }
 
     private boolean isRetryableException(Throwable throwable) {

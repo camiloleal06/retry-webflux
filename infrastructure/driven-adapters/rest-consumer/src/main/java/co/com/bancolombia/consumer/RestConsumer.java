@@ -19,12 +19,13 @@ public class RestConsumer implements CustomerRepository {
     @Override
     public Mono<String> createCustomer(Customer customer) {
 
-        return webClient.post().uri("http://http://sysredcartagena.duckdns.org:8888")
+        return webClient.post().uri("http://sysredcartagena.duckdns.org:8888/api/v1/create")
                 .bodyValue(
                         Mapper.MAPPER.toCustomerRequest(customer))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String.class)
+                .doOnSuccess(response -> log.info("Response from create customer: {}", response))
                 .flatMap(this::validateCreateCustomerResult)
                 .onErrorResume(error -> this.handleError(error, customer));
     }
