@@ -22,7 +22,7 @@ public class RestConsumer implements CustomerRepository {
     @Override
     public Mono<String> createCustomer(Customer customer) {
 
-        return webClient.post().uri("http://localhost:8080")
+        return webClient.post().uri("http://http://sysredcartagena.duckdns.org:8888")
                 .bodyValue(
                         Mapper.MAPPER.toCustomerRequest(customer))
                 .accept(MediaType.APPLICATION_JSON)
