@@ -1,0 +1,22 @@
+digraph INFRA {
+  node [ color = "black", fillcolor = "#E6E6E6", height =1, style = "filled,bold,rounded", fontname = "Arial" ];
+  "AppService" [ label = "AppService
+(AWS::ECS::Service)", shape =rectangle, fillcolor = "#B7E0FF" ];
+  "AppTaskDefinition" [ label = "AppTaskDefinition
+(AWS::ECS::TaskDefinition)", shape =rectangle, fillcolor = "#B7E0FF" ];
+  "AppContainer" [ label = "AppContainer
+(AWS::ECS::ContainerDefinition)", shape =rectangle, fillcolor = "#B7E0FF" ];
+  "AppLoadBalancer" [ label = "AppLoadBalancer
+(AWS::ElasticLoadBalancingV2::LoadBalancer)", shape =rectangle, fillcolor = "#E78F81" ];
+  "AppDatabase" [ label = "AppDatabase
+(AWS::RDS::DBInstance)", shape =cylinder, fillcolor = "#FFCFB3" ];
+  "AppSecurityGroup" [ label = "AppSecurityGroup
+(AWS::EC2::SecurityGroup)", shape =rectangle ];
+  "AppLogGroup" [ label = "AppLogGroup
+(AWS::Logs::LogGroup)", shape =rectangle ];
+  "RestConsumer" [ label = "RestConsumer
+(AWS::ApiGateway::RestApi)", shape =rectangle, fillcolor = "#E78F81" ];
+  "AppService" -> "AppTaskDefinition";
+  "AppService" -> "AppLoadBalancer";
+  "AppTaskDefinition" -> "AppContainer";
+}
