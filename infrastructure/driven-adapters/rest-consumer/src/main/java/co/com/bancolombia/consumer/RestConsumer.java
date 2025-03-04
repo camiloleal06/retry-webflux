@@ -2,7 +2,6 @@ package co.com.bancolombia.consumer;
 
 import co.com.bancolombia.TechnicalException;
 import co.com.bancolombia.model.customer.Customer;
-import co.com.bancolombia.model.customer.CustomerResult;
 import co.com.bancolombia.model.customer.gateways.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.net.ConnectException;
 
 @Service
 @RequiredArgsConstructor
