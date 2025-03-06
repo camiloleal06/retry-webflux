@@ -18,10 +18,11 @@ public class Handler {
     public Mono<ServerResponse> listenPOSTUseCase(ServerRequest serverRequest) {
 
         return serverRequest.bodyToMono(CustomerRequest.class)
-                .flatMap(customerRequest -> { // Transform the request body to a CustomerRequest object
+                .flatMap(customerRequest -> {
                     log.info("Received request: {}", customerRequest);
                     return createCustomerUseCase.createCustomer(Mapper.MAPPER.toCustomer(customerRequest));
                 })
-                .flatMap(customer -> ServerResponse.ok().bodyValue(customer));
+                .flatMap(customer -> ServerResponse.ok()
+                        .bodyValue(Mapper.MAPPER.toFrontResponse(customer)));
     }
 }
