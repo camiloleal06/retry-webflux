@@ -18,14 +18,14 @@ public class CreateCustomerUseCase {
 
      public Mono<CustomerResult> createCustomer(Customer customer) {
       return customerRepository.createCustomer(customer).
-         retryWhen(buildRetryConfigBackoffAndJitter(customer));
+         retryWhen(buildRetryConfigFixedDelay(customer));
     }
 
     private Retry buildRetryConfigBackoffAndJitter(Customer customer) {
         return Retry.backoff(3, Duration.ofSeconds(5))
                 .jitter(0.2)
                 .filter(this::isRetryableException)
-                .doBeforeRetry(retrySignal -> System.out.println("Retry attempt start: " + retrySignal.totalRetries()))
+                .doBeforeRetry(retrySignal -> System.out.println("Retry attempt start: " + (retrySignal.totalRetries()+1)))
                 .doAfterRetry(retrySignal -> createCustomerByRetry(customer))
                 .onRetryExhaustedThrow(this::handleRetryExhausted);
     }
@@ -33,16 +33,16 @@ public class CreateCustomerUseCase {
     private Retry buildRetryConfigFixedDelay(Customer customer) {
         return Retry.fixedDelay(3, Duration.ofSeconds(2))
                 .filter(this::isRetryableException)
-                .doBeforeRetry(retrySignal -> createCustomerByRetry(customer))
-                .doAfterRetry(retrySignal -> System.out.println("Retry attempt end: " + retrySignal.totalRetries()))
+                .doBeforeRetry(retrySignal -> System.out.println("Retry attempt start: " + (retrySignal.totalRetries()+1)))
+                .doAfterRetry(retrySignal -> createCustomerByRetry(customer))
                 .onRetryExhaustedThrow(this::handleRetryExhausted);
     }
 
     private Retry buildRetryConfigExponentialBackoffNoJitter(Customer customer) {
         return Retry.backoff(3, Duration.ofSeconds(5))
                 .filter(this::isRetryableException)
-                .doBeforeRetry(retrySignal -> createCustomerByRetry(customer))
-                .doAfterRetry(retrySignal -> System.out.println("Retry attempt end: " + retrySignal.totalRetries()))
+                .doBeforeRetry(retrySignal -> System.out.println("Retry attempt start: " + (retrySignal.totalRetries()+1)))
+                .doAfterRetry(retrySignal -> createCustomerByRetry(customer))
                 .onRetryExhaustedThrow(this::handleRetryExhausted);
     }
 
