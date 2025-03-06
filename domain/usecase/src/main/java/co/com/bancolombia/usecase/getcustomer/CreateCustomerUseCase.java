@@ -25,8 +25,8 @@ public class CreateCustomerUseCase {
         return Retry.backoff(3, Duration.ofSeconds(5))
                 .jitter(0.2)
                 .filter(this::isRetryableException)
-                .doBeforeRetry(retrySignal -> createCustomerByRetry(customer))
-                .doAfterRetry(retrySignal -> System.out.println("Retry attempt end: " + retrySignal.totalRetries()))
+                .doBeforeRetry(retrySignal -> System.out.println("Retry attempt start: " + retrySignal.totalRetries()))
+                .doAfterRetry(retrySignal -> createCustomerByRetry(customer))
                 .onRetryExhaustedThrow(this::handleRetryExhausted);
     }
 
@@ -42,7 +42,7 @@ public class CreateCustomerUseCase {
         return Retry.backoff(3, Duration.ofSeconds(5))
                 .filter(this::isRetryableException)
                 .doBeforeRetry(retrySignal -> createCustomerByRetry(customer))
-               .doAfterRetry(retrySignal -> System.out.println("Retry attempt end: " + retrySignal.totalRetries()))
+                .doAfterRetry(retrySignal -> System.out.println("Retry attempt end: " + retrySignal.totalRetries()))
                 .onRetryExhaustedThrow(this::handleRetryExhausted);
     }
 
